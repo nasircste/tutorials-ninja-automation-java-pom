@@ -42,7 +42,7 @@ public class BaseClass {        //This is the parent class of all the test cases
     	  logger=LogManager.getLogger(this.getClass());
     	  
     	  
-    	  
+             // changing some thing 
     	  
     	  if(p.getProperty("execution_env").equalsIgnoreCase("remote"))
   		{
