@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <!-- Custom Property (folder path for logs) -->
+    <Properties>
+        <Property name="basePath">./logs</Property>
+    </Properties>
+
+    <Appenders>
+
+        <!-- Console Logs -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+
+        <!-- Rolling File Logs -->
+        <RollingFile
+                name="File"
+                fileName="${basePath}/automation.log"
+                filePattern="${basePath}/automation-%d{yyyy-MM-dd}.log">
+                <!-- log msg er format kmon hobe ta nirdharon kore -->
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+
+            <Policies>
+                <SizeBasedTriggeringPolicy size="5MB"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+
+           <!-- <DefaultRolloverStrategy max="10"/> --> 
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+        <!-- Root logger: sends logs to Console + File -->
+        <Root level="debug">
+            <!-- <AppenderRef ref="Console"/> -->
+            <AppenderRef ref="File"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
