@@ -1,135 +1,234 @@
-# Tutorials Ninja Automation (Java + Selenium + POM)
+# TutorialsNinja Test Automation (Selenium + Java, POM)
 
-A professional-grade Test Automation Framework for the Tutorials Ninja demo application, built with Java, Selenium WebDriver, TestNG, and the Page Object Model (POM) design pattern. The framework supports cross-browser execution, grouping and suite management via TestNG XMLs, Selenium Grid (local and Dockerized), reporting, screenshots, and logs.
-- **Purpose:** To automate testing of web applications.  
-- **Why it was created:** To achieve faster, repeatable, and maintenance-friendly testing compared to manual testing.   
+Professional-grade test automation suite for the TutorialsNinja demo site, focused on authentication and core e‑commerce flows. Built with Selenium WebDriver, Java, TestNG, and the Page Object Model (POM). Includes cross‑browser execution, Dockerized Selenium Grid, reporting, screenshots, and data-driven testing support.
+
+- Repository: [nasircste/tutorials-ninja-automation-java-pom](https://github.com/nasircste/tutorials-ninja-automation-java-pom)
+- Demo site: https://tutorialsninja.com/demo/
 
 ## Table of Contents
-- [Features](#features)
+- [Key Highlights](#key-highlights)
 - [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-
+- [Repository Structure](#repository-structure)
+- [What This Project Covers](#what-this-project-covers)
+  - [User Registration](#user-registration)
+  - [User Login](#user-login)
+  - [Navigation & Basic E‑commerce Checks](#navigation--basic-e-commerce-checks)
+  - [Test Reliability Features](#test-reliability-features)
+- [How It Works](#how-it-works)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
 - [Running Tests](#running-tests)
-- [Cross-Browser Testing](#cross-browser-testing)
-- [Selenium Grid with Docker](#selenium-grid-with-docker)
-- [Data, Logs, Screenshots, and Reports](#data-logs-screenshots-and-reports)
-- [Test Suite Files](#test-suite-files)
+  - [Option 1: One‑click (Windows)](#option-1-one-click-windows)
+  - [Option 2: Maven + TestNG Suite](#option-2-maven--testng-suite)
+  - [Option 3: Selenium Grid (Docker)](#option-3-selenium-grid-docker)
+- [Reports & Artifacts](#reports--artifacts)
+- [Continuous Testing Ideas (Optional)](#continuous-testing-ideas-optional)
+- [Coding Approach & Good Practices](#coding-approach--good-practices)
+- [Example Scenarios (Conceptual)](#example-scenarios-conceptual)
+  - [Registration](#registration)
+  - [Login](#login)
+  - [Navigation](#navigation)
+- [Maintenance & Extensibility](#maintenance--extensibility)
+- [Troubleshooting](#troubleshooting)
+- [License](#license)
 
----
-
-## Features
-- Page Object Model (POM) structure for clean, maintainable tests
-- TestNG for test orchestration (suites, groups, parallelism)
-- Cross-browser execution (Chrome, Firefox, Edge, configured via TestNG XML)
-- Selenium Grid support (local hub/node and Dockerized grid)
-- Centralized test data directory for data-driven testing
-- Automatic screenshots for failures
-- Logs and HTML reports output after execution
-- Simple one-click/run script via `run.bat`
+## Key Highlights
+- Selenium WebDriver + Java with TestNG suite orchestration
+- Page Object Model (POM) for maintainable, scalable tests
+- Cross‑browser runs (Chrome/Firefox/Edge) via TestNG suites
+- Selenium Grid via Docker Compose for distributed/parallel runs
+- Centralized test data and environment configuration
+- HTML reports and artifacts (reports, logs, screenshots)
+- Simple one‑click run script for local execution (Windows)
 
 ## Tech Stack
-- Java (JDK 8+ recommended)
-- Selenium WebDriver
-- TestNG
-- Maven (build, dependency management)
-- Docker (for Selenium Grid via docker-compose)
-- Optional: Allure or Extent Reports (depending on project setup)
+- Language: Java
+- Test Framework: TestNG
+- Automation: Selenium WebDriver
+- Build Tool: Maven (`pom.xml`)
+- Grid/Parallel: Selenium Grid (Docker Compose)
+- Reporting & Artifacts: TestNG HTML, custom `reports/`, `logs/`, `screenshots/`
+- Patterns: Page Object Model (POM)
+- IDE: Eclipse/IntelliJ project files present (`.project`, `.classpath`, `.settings/`)
 
-## Project Structure
-High-level directories and files:
+## Repository Structure
+```
+.
+├── pom.xml                     # Maven dependencies & plugins
+├── master.xml                  # Aggregated TestNG suite
+├── CrossBrowserTesting.xml     # TestNG suite for cross-browser runs
+├── grouping.xml                # TestNG suite with TestNG groups
+├── grid-docker.xml             # TestNG suite targeting Selenium Grid
+├── docker-compose.yaml         # Selenium Grid infra (hub & nodes)
+├── run.bat                     # One-click local execution (Windows)
+├── src/                        # Source code (pages, base, tests, utils)
+├── testData/                   # Externalized test data (e.g., CSV/JSON)
+├── reports/                    # Test reports output
+├── logs/                       # Execution logs
+├── screenshots/                # Failure screenshots
+├── test-output/                # Default TestNG report output
+├── .project, .classpath, .settings/  # IDE metadata
+└── testing.txt                 # Repo placeholder/info
+```
 
-- `.classpath`, `.project`, `.settings/` — Eclipse project configuration
-- `pom.xml` — Maven dependencies and build configuration
-- `src/` — Source code (page objects, test classes, utilities)
-- `testData/` — Input datasets for data-driven tests
-- `logs/` — Runtime logs generated during test runs
-- `screenshots/` — Captured images (e.g., on test failure)
-- `reports/` — Test execution reports
-- `test-output/` — TestNG output (HTML reports, etc.)
-- `master.xml` — Main TestNG suite file
-- `grouping.xml` — Group-based TestNG execution file
-- `CrossBrowserTesting.xml` — Cross-browser TestNG suite
-- `grid-docker.xml` — TestNG suite configured for Selenium Grid (Docker)
-- `docker-compose.yaml` — Selenium Grid setup via Docker
-- `run.bat` — Convenience script to run tests locally
-- `grid-docker.xml`, `CrossBrowserTesting.xml`, `grouping.xml`, `master.xml` — Different suites for varied execution strategies
+## What This Project Covers
+- User Registration
+  - New account creation with valid data
+  - Validation for existing email
+  - Client- and server-side error messages
+- User Login
+  - Positive login with valid credentials
+  - Negative login (invalid email/password combinations)
+  - Locked/unknown user scenarios (if applicable)
+- Navigation & Basic E‑commerce Checks
+  - Home → Login/Registration flow navigation
+  - Header/footer links smoke checks (optional)
+- Test Reliability Features
+  - Explicit waits and reusable wait utilities
+  - Clean driver lifecycle management
+  - Page objects encapsulate locators and actions
+  - Data-driven testing from `testData/`
+
+## How It Works
+1. TestNG orchestrates execution through suite files:
+   - `master.xml` runs the full suite end‑to‑end.
+   - `CrossBrowserTesting.xml` configures the same tests against multiple browsers.
+   - `grouping.xml` targets specific TestNG groups (e.g., `smoke`, `regression`, `auth`).
+   - `grid-docker.xml` points tests to Selenium Grid when running in Docker.
+2. Selenium WebDriver is initialized in a base layer (Driver Factory / Test Base).
+3. Each page of the demo site has a dedicated Page Object class (POM) that:
+   - Holds the locators and business actions (e.g., `LoginPage.login(email, password)`).
+   - Provides clear separation of concerns and reusability.
+4. Tests call page methods to perform actions, assert results, and capture artifacts.
+5. Failures automatically capture screenshots and logs for fast debugging.
+6. Reports are generated to `reports/` and `test-output/`.
 
 ## Getting Started
 
 ### Prerequisites
-- Java JDK installed and `JAVA_HOME` configured
-- Maven installed (`mvn -v` should work)
-- A modern web browser (Chrome/Firefox/Edge)
-- Docker Desktop (optional, for Grid)
-- IDE (IntelliJ IDEA or Eclipse)
+- Java 11+ (17 recommended)
+- Maven 3.8+
+- Chrome/Firefox/Edge installed (for local runs)
+- Docker Desktop (for Grid runs)
 
-### Install Dependencies
-In the project root:
+### Installation
 ```bash
-mvn clean install -DskipTests
+git clone https://github.com/nasircste/tutorials-ninja-automation-java-pom.git
+cd tutorials-ninja-automation-java-pom
+mvn -v
+java -version
 ```
+
+### Configuration
+- Base URL: https://tutorialsninja.com/demo/
+- Browser selection is controlled by suite parameters or environment/system properties.
+- Test data resides under `testData/`.
+- If you maintain a `config.properties`, set values like:
+  ```
+  baseUrl=https://tutorialsninja.com/demo/
+  browser=chrome
+  headless=false
+  timeout=10
+  ```
 
 ## Running Tests
 
-### Option 1: Using the Batch Script
-Windows:
+### Option 1: One‑click (Windows)
 ```bash
 run.bat
 ```
+By default, this triggers a standard local execution (Chrome, non‑headless).
 
-### Option 2: Using Maven + TestNG Suites
-Run the main suite:
+### Option 2: Maven + TestNG Suite
+Run the master suite:
 ```bash
 mvn clean test -DsuiteXmlFile=master.xml
 ```
 
-Run group-based suite:
-```bash
-mvn clean test -DsuiteXmlFile=grouping.xml
-```
-
-## Cross-Browser Testing
-Execute cross-browser suite (parallel or sequential as defined in the XML):
+Run cross‑browser suite:
 ```bash
 mvn clean test -DsuiteXmlFile=CrossBrowserTesting.xml
 ```
-You can parameterize browser via TestNG parameters or system properties (e.g., `-Dbrowser=chrome`), depending on how the framework is wired in `pom.xml` and the test initialization code.
 
-## Selenium Grid with Docker
+Run with groups (e.g., smoke):
+```bash
+mvn clean test -DsuiteXmlFile=grouping.xml -Dgroups=smoke
+```
 
-### Start Selenium Grid via Docker Compose
-From the project root:
+### Option 3: Selenium Grid (Docker)
+Start Selenium Grid:
 ```bash
 docker compose up -d
 ```
-This brings up the Selenium Hub and browser nodes as defined in `docker-compose.yaml`.
-
-### Run Tests on the Grid
+Run tests pointing to Grid:
 ```bash
 mvn clean test -DsuiteXmlFile=grid-docker.xml
 ```
-Ensure your TestNG suite and WebDriver setup point to the Grid hub URL (e.g., `http://localhost:4444/wd/hub`).
+Tear down Grid:
+```bash
+docker compose down
+```
 
-## Data, Logs, Screenshots, and Reports
+## Reports & Artifacts
+- Default TestNG HTML report: `test-output/index.html`
+- Custom report/artifact folder: `reports/`
+- Logs: `logs/`
+- Failure screenshots: `screenshots/`
 
-- `testData/` — Store CSV/JSON/Excel files for data-driven tests. Reference them in your tests via utility loaders.
-- `logs/` — Runtime logs for debugging; cleared/recreated per run as configured.
-- `screenshots/` — Failure screenshots saved with test names and timestamps.
-- `reports/` and `test-output/` — TestNG HTML reports and any extended reporting artifacts.
+To open default TestNG report:
+- Navigate to `test-output` and open `index.html` in a browser.
 
-After execution, open the TestNG report:
-- `test-output/index.html`
+## Continuous Testing Ideas (Optional)
+- GitHub Actions CI: run `mvn clean test` on every push/PR
+- Matrix build: run across multiple Java versions and browsers
+- Publish artifacts (reports, screenshots) as workflow outputs
 
-## Test Suite Files
+## Coding Approach & Good Practices
+- Page Object Model (POM) with clear separation of pages vs tests
+- Reusable utilities for waits, config, and common actions
+- Stable selectors and explicit waits to reduce flakiness
+- Parameterized runs via TestNG/Maven properties
+- Consistent naming and package structure for readability
+- Artifacts preserved for investigation (reports/logs/screenshots)
 
-- `master.xml` — Primary suite covering core flows (login, search, cart, checkout, etc.)
-- `grouping.xml` — Enables execution by TestNG group annotations (e.g., `smoke`, `regression`)
-- `CrossBrowserTesting.xml` — Runs same tests across multiple browsers
-- `grid-docker.xml` — Routes tests to Selenium Grid (useful for parallel execution at scale)
+## Example Scenarios (Conceptual)
+- Registration:
+  - Navigate to Register page → Fill form with unique data → Submit → Verify success alert.
+  - Attempt register with existing email → Verify error message.
+- Login:
+  - Navigate to Login page → Enter valid credentials → Verify account dashboard.
+  - Enter wrong password → Verify warning message and remain on login.
+- Navigation:
+  - Validate header links (My Account, Login, Register) presence and clickability.
+  - Ensure URLs and page titles match expectations.
 
+## Maintenance & Extensibility
+- Add new Page Objects under `src/main/java/.../pages/`
+- Add tests under `src/test/java/.../tests/`
+- Add more data sets in `testData/` for data-driven tests
+- Extend suites (`master.xml`, `grouping.xml`) to include new modules
+- Scale parallelism with Grid; add more nodes in `docker-compose.yaml`
+
+## Troubleshooting
+- Drivers/browsers mismatch:
+  - Update WebDriverManager or driver binaries via Maven dependencies (if configured).
+- Grid connection issues:
+  - Ensure hub and nodes are healthy (`docker compose ps`).
+  - Check that the suite points to the hub URL (e.g., `http://localhost:4444/wd/hub`).
+- Flaky tests:
+  - Review waits and page load strategies.
+  - Stabilize locators and use retry logic if appropriate.
+
+## License
+- This project is for demonstration/portfolio purposes and uses the public demo site. No license specified.
 
 ---
 
-### Contact
-Maintainer: nasircste  
-GitHub: [nasircste](https://github.com/nasircste)
+If you are an HR or interviewer, this repository demonstrates hands‑on experience with:
+- Designing a maintainable test framework (POM)
+- Writing robust TestNG suites and grouping strategies
+- Running locally and at scale on Selenium Grid with Docker
+- Managing test data, logs, screenshots, and reports
+- Applying best practices to reduce flakiness and improve reliability
