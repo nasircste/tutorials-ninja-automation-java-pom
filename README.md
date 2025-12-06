@@ -14,10 +14,6 @@ A professional-grade Test Automation Framework for the Tutorials Ninja demo appl
 - [Selenium Grid with Docker](#selenium-grid-with-docker)
 - [Data, Logs, Screenshots, and Reports](#data-logs-screenshots-and-reports)
 - [Test Suite Files](#test-suite-files)
-- [Best Practices](#best-practices)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
 
 ---
 
